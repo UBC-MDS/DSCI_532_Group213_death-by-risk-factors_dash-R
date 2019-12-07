@@ -3,7 +3,7 @@ A R dashboard by Shiying Wang, Shangjing Hu and Sakariya Aynashe.
 
 ## Deployed App Functionality
 
-The [death factors app](https://risk-factors-of-death.herokuapp.com) has been designed in an interactive three-tab dash container that enhanced visibility and user-friendliness. The key functionalities of this application were built upon the three research questions in milestone1 which are below for reference.
+The death factors app has been designed in an interactive three-tab dash container that enhanced visibility and user-friendliness. The key functionalities of this application were built upon the three research questions in milestone1 which are below for reference.
 
 - What are the top 5 risk factors that caused the largest number of deaths in 2017?
 - How do these risk factors compare among countries in 2017?

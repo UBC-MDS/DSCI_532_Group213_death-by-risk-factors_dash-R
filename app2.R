@@ -21,32 +21,58 @@ bar_data <- bar_data %>%
     rename(Death_in_million = Death..in.million.)
 
 plot_bar <- function(data){
-    p <- ggplot(data, aes(x = reorder(Risk_factors, Death_in_million), y = Death_in_million)) +
+    p <- ggplot(data, aes(x = reorder(Risk_factors, Death_in_million), y = Death_in_million,
+                         text = paste("Risk factor: ",Risk_factors, "<br>", 
+                                      'Death in million: ', round(Death_in_million,2)))) +
     geom_bar(stat = 'identity', color = 'grey', fill = 'orange') +
     coord_flip() +
     theme_bw() +
     labs(x = 'Risk Factors', 
         y = 'Death (in million)',
-        title = 'Global death by risk factors in 2017 (in million)')
-    ggplotly(p)
+        title = 'Death (in million) by risk factors in 2017')
+    ggplotly(p,tooltip = c('text'))
 }
+
+# set y-axis key
+yaxisKey <- tibble(label = c("High blood Pressure", "Smoking", "High blood sugar", "Air pollution outdoor & indoor", 'Obesity'),
+                   value = c("high_bood_pressure", "smoking", "high_blood_sugar", "air_pollution_outdoor_._indoor", "obesity"))
+
+yaxisDropdown <- dccDropdown(
+  id = 'y-axis',
+  options = map(
+    1:nrow(yaxisKey), function(i){
+      list(label=yaxisKey$label[i], value=yaxisKey$value[i])
+    }),
+  value = "high_blood_pressure"
+)
 
 # map chart starts
 geo_data <- st_read("data/map_data.geojson")
-plot_map <-  function(column_name){
-    p <- ggplot(data = geo_data, aes_string(fill = column_name)) +
-    geom_sf(aes( text = paste("Country:", country, "<br>", str_replace_all(column_name, "_", " " ),':', 
-                              percent(get(column_name), accuracy = 0.01)))) +
+plot_map <-  function(yaxis){
+    # y_label <- yaxisKey$label[yaxisKey$value==yaxis]
+    y_axis_reassigned <- aes_string(fill = yaxis)
+    p <- ggplot(data = geo_data, y_axis_reassigned) + # aes_string(fill = yaxis)) +
+    geom_sf(aes(text = paste("Country:", country, "<br>", str_replace_all(y_axis_reassigned, "_", " " ),':', 
+                              percent(get(yaxis), accuracy = 0.01)))) +
     scale_fill_distiller(palette = "Reds", trans = "reverse") +
     theme_bw() +
     labs(title = paste('Death percentage of',
-                       str_replace_all(column_name, "_", " " ),
+                       str_replace_all(yaxis, "_", " " ),
                        'among countries in 2017'),
         fill = 'Proportion of death') 
     
     ggplotly(p,tooltip = c("text"))   
 }
 # map ends
+
+yaxisRadioButton <- dccRadioItems(
+  id = 'y-axis-line-graph',
+  options = map(
+    1:nrow(yaxisKey), function(i){
+      list(label=yaxisKey$label[i], value=yaxisKey$value[i])
+    }),
+  value = "high_blood_pressure"
+)
 
 # line graph starts
 factors_data=read.csv("data/clean_data_line_plot_new.csv")
@@ -83,11 +109,9 @@ show_map <- dccGraph(
   )
 
 line_chart <- dccGraph(
-  id = 'line_chart',
+  id = 'line-chart',
   figure=plot_line('high_blood_pressure')
   )
-
-
 
 
 # layout starts
@@ -95,16 +119,39 @@ app$layout(
   htmlDiv(
     list(
       htmlH1('Exploring the Risk Factors of Death'),
-      # htmlH2(''),
       bar_graph,
       htmlDiv(),
+      yaxisDropdown,
       show_map,
       htmlDiv(), #spacer
+      yaxisRadioButton,
       line_chart,
       htmlDiv(),
       htmlP('Data source: "Institute for Health Metrics and Evaluation (IHME), 2018".')
     )
   )
 )
+
+# Adding callbacks for interactivity
+app$callback(
+  # update figure of gap-graph
+  output=list(id = 'map-graph', property='figure'),
+  
+  params=list(input(id = 'y-axis', property='value')),
+
+  # this translates your list of params into function arguments
+  function(yaxis_value) {
+    plot_map(yaxis_value)
+  })
+
+app$callback(
+  # update figure of gap-graph
+  output=list(id = 'line-chart', property='figure'),
+  
+  params=list(input(id = 'y-axis-line-graph', property='value')),
+
+  function(yaxis_value){
+    plot_line(yaxis_value)
+  })
 
 app$run_server()

@@ -1,0 +1,17 @@
+  
+{
+    "name": "Exploring Risk Factors of Death",
+    "description": "This app explors risk factors of death.",
+    "keywords": [
+      "heroku",
+      "R deployment",
+      "Dash R"
+  ],
+  "buildpacks": [
+      {
+        "url": "https://github.com/virtualstaticvoid/heroku-buildpack-r.git#heroku-16"
+      }
+    ],
+    "stack": "heroku-16"
+  }
+  

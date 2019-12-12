@@ -20,6 +20,14 @@ bar_data <- bar_data %>%
     rename(Death_in_million = Death..in.million.)
 
 plot_bar <- function(data){
+    #' Draw a bar chart for all the death by risk factors in 2017 (descending order)
+    #'
+    #' @param data -- (string) the data source
+    #'
+    #' @return a bar chart of all the death by risk factors in 2017
+    #'  (descending order)
+    #'
+    #' @examples plot_bar(bar_data)
     p <- ggplot(data, aes(x = reorder(Risk_factors, Death_in_million), y = Death_in_million,
                          text = paste("Risk factor: ",Risk_factors, "<br>", 
                                       'Death in million: ', round(Death_in_million,2)))) +
@@ -49,6 +57,14 @@ yaxisDropdown <- dccDropdown(
 # map chart starts
 geo_data <- st_read("data/map_data.geojson")
 plot_map <-  function(yaxis){
+    #' Draw heatmap for given quantitative value in world map
+    #'
+    #' @param yaxis -- (string) columns in source, default: 
+    #' 'high_blood_pressure'
+    #'
+    #' @return a headmap for givien quantitative value in the world map
+    #'
+    #' @examples draw_map('high_blood_sugar')
     y_axis_reassigned <- aes_string(fill = yaxis)
     p <- ggplot(data = geo_data, y_axis_reassigned) + 
     geom_sf(aes(text = paste("Country:", country, "<br>", str_replace_all(y_axis_reassigned, "_", " " ),':', 
@@ -77,7 +93,15 @@ yaxisRadioButton <- dccRadioItems(
 factors_data=read.csv("data/clean_data_line_plot_new.csv")
 
 plot_line <- function (cols){
-
+    #' Draw the interactie line graph for the trend of the 
+    #' top five risk factors of death from 1990 to 2017 by continent
+    #'
+    #' @param yaxis  -- (string) columns in source, default: 
+    #' 'high_blood_pressure'
+    #'
+    #' @return a interactive line chart
+    #' 
+    #' @examples plot_line('high_blood_sugar)
     line_plot <- ggplot(factors_data, aes(x= year, y = get(cols), color=continent)) +
              geom_line(size=0.5)+
              geom_point(aes(text = paste("Continent:", continent, "<br>", "Year:", year, "<br>",
@@ -160,4 +184,4 @@ app$callback(
     plot_line(yaxis_value)
   })
 
-app$run_server()
+app$run_server(host = "0.0.0.0", port = Sys.getenv('PORT', 8050))

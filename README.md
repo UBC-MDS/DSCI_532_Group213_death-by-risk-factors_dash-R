@@ -26,3 +26,6 @@ The app contains a page with three tabs. The landing page would display the firs
 ![app_feature2](img/app_feature2.png)
 ![app_feature3](img/app_feature3.png)
 
+# dashR_deployed
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)

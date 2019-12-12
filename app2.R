@@ -117,18 +117,23 @@ line_chart <- dccGraph(
 # layout starts
 app$layout(
   htmlDiv(
-    list(
-      htmlH1('Exploring the Risk Factors of Death'),
-      bar_graph,
-      htmlDiv(),
-      yaxisDropdown,
-      show_map,
-      htmlDiv(), #spacer
-      yaxisRadioButton,
-      line_chart,
-      htmlDiv(),
-      htmlP('Data source: "Institute for Health Metrics and Evaluation (IHME), 2018".')
-    )
+  dccTabs(id = 'tabs', value = 'tab-1', children = list(
+      dccTab(label = '2017 Overview', value = 'tab-1', children = list(
+          htmlH1('Exploring the Risk Factors of Death'),
+          bar_graph,
+          htmlP('Data source: "Institute for Health Metrics and Evaluation (IHME), 2018".')
+      )),
+      
+      dccTab(label = '2017 World Spread', value = 'tab-2', children = list(
+          yaxisDropdown,
+          show_map
+      )),
+
+      dccTab(label = 'Trend over Continent', value = 'tab-3', children = list(
+          yaxisRadioButton,
+          line_chart
+      ))
+    ))
   )
 )
 

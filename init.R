@@ -20,14 +20,7 @@ install.packages("listenv")
 install.packages("anytime")
 install.packages("readr")
 install.packages("heatmaply")
-# tidyverse, 
-install.packages("tidyverse")
-install.packages("ggplot2")
-install.packages("dash")
-install.packages("dashCoreComponents")
-install.packages("dashHtmlComponents")
-install.packages("sf")
-install.packages("scales")
+
 
 # installs magrittr, promises, R6
 remotes::install_version("httpuv", version = "1.4.5.1", repos = "http://cloud.r-project.org", upgrade="never")
@@ -61,3 +54,8 @@ remotes::install_github("plotly/dash-table", ref="042ad65")
 remotes::install_github("plotly/dash-html-components", ref="17da1f4")
 remotes::install_github("plotly/dash-core-components", ref="cc1e654")
 remotes::install_github("plotly/dashR", ref="dev", dependencies=FALSE)
+
+# installing tidyverse, sf, scales
+install.packages("tidyverse")
+install.packages("sf")
+install.packages("scales")
